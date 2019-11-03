@@ -4,8 +4,9 @@
 import sys
 import logging
 import qdarkstyle
-from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtCore import QFile
+from PyQt5.QtGui import QBrush, QPixmap, QImage
+from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsScene
+from PyQt5.QtCore import QFile, QSize
 from PyQt5.uic import loadUi
 
 
@@ -29,5 +30,21 @@ if __name__ == "__main__":
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
     window = MainWindow()
+
+    simWindow = window.simulation_window
+    width = simWindow.sceneRect().width()
+    height = simWindow.sceneRect().height()
+    planeImage = QPixmap('assets/planeLayout.png')
+    print(width, height)
+    planeImage = planeImage.scaled(1781, 431)
+
+    if planeImage.isNull():
+        print("Could not find plane layout image")
+
+    newScene = QGraphicsScene(simWindow)
+    newScene.setBackgroundBrush(QBrush(planeImage))
+    simWindow.setScene(newScene)
+
+
 
     sys.exit(app.exec_())
