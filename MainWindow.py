@@ -8,6 +8,8 @@ from PyQt5.QtGui import QBrush, QPixmap, QImage
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsScene
 from PyQt5.QtCore import QFile, QSize
 from PyQt5.uic import loadUi
+from Plane import Plane 
+from Person import Person 
 
 
 class MainWindow(QMainWindow):
@@ -32,19 +34,23 @@ if __name__ == "__main__":
     window = MainWindow()
 
     simWindow = window.simulation_window
-    width = simWindow.sceneRect().width()
-    height = simWindow.sceneRect().height()
     planeImage = QPixmap('assets/planeLayout.png')
-    print(width, height)
-    planeImage = planeImage.scaled(1781, 431)
 
     if planeImage.isNull():
         print("Could not find plane layout image")
+        exit()
 
     newScene = QGraphicsScene(simWindow)
-    newScene.setBackgroundBrush(QBrush(planeImage))
+    newScene.addPixmap(planeImage)
     simWindow.setScene(newScene)
 
+    plane = Plane()
 
+    #test
+    for row in plane.positions:
+        for seat in row:
+            p = Person(seat)
+            p.setPos(seat.x_pos, seat.y_pos)
+            newScene.addItem(p)
 
     sys.exit(app.exec_())
