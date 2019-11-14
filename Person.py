@@ -2,9 +2,11 @@ from PyQt5.QtWidgets import QGraphicsPixmapItem
 from PyQt5.QtGui import QPixmap
 from Seat import SeatRow
 from enum import Enum
+import os 
 
 MoveType = Enum('MoveType', 'Up Down Left Right NoMove')
 
+dirname = os.path.dirname(__file__)
 
 class Person(QGraphicsPixmapItem):
 
@@ -28,17 +30,17 @@ class Person(QGraphicsPixmapItem):
         self.isDefault = True
 
         if goalSeat.seatType == SeatRow.Center:
-            self.pixMap = QPixmap('assets/tealPerson.png')
-            self.waitigPixMap = QPixmap('assets/tealPersonWaiting.png')
-            self.stowingPixMap = QPixmap('assets/tealPersonStowing.png')
+            self.pixMap = QPixmap(os.path.join(dirname, 'assets/tealPerson.png'))
+            self.waitigPixMap = QPixmap(os.path.join(dirname, 'assets/tealPersonWaiting.png'))
+            self.stowingPixMap = QPixmap(os.path.join(dirname, 'assets/tealPersonStowing.png'))
         elif goalSeat.seatType == SeatRow.Isle:
-            self.pixMap = QPixmap('assets/violetPerson.png')
-            self.waitigPixMap = QPixmap('assets/violetPersonWaiting.png')
-            self.stowingPixMap = QPixmap('assets/violetPersonStowing.png')
+            self.pixMap = QPixmap(os.path.join(dirname, 'assets/violetPerson.png'))
+            self.waitigPixMap = QPixmap(os.path.join(dirname, 'assets/violetPersonWaiting.png'))
+            self.stowingPixMap = QPixmap(os.path.join(dirname, 'assets/violetPersonStowing.png'))
         elif goalSeat.seatType == SeatRow.Window:
-            self.pixMap = QPixmap('assets/bluePerson.png')
-            self.waitigPixMap = QPixmap('assets/bluePersonWaiting.png')
-            self.stowingPixMap = QPixmap('assets/bluePersonStowing.png')
+            self.pixMap = QPixmap(os.path.join(dirname, 'assets/bluePerson.png'))
+            self.waitigPixMap = QPixmap(os.path.join(dirname, 'assets/bluePersonWaiting.png'))
+            self.stowingPixMap = QPixmap(os.path.join(dirname, 'assets/bluePersonStowing.png'))
         super().__init__(self.pixMap)
     
     def isDefaultPixMap(self):

@@ -4,6 +4,7 @@
 import sys
 import logging
 import qdarkstyle
+import os 
 from PyQt5.QtGui import QBrush, QPixmap, QImage
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsScene
 from PyQt5.QtCore import QFile, QSize
@@ -13,7 +14,7 @@ from Person import Person
 from Seat import SeatRow
 from Simulation import Simulation, ShuffleType
 
-
+dirname = os.path.dirname(__file__)
 class MainWindow(QMainWindow):
     """
     The Main panel of the application 
@@ -21,7 +22,8 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        loadUi("assets/mainwindow.ui", self)
+        path = os.path.join(dirname, 'assets/mainwindow.ui')
+        loadUi(path, self)
         self.show()
 
 
@@ -36,7 +38,8 @@ if __name__ == "__main__":
     window = MainWindow()
 
     simWindow = window.simulation_window
-    planeImage = QPixmap('assets/planeLayout.png')
+    path = os.path.join(dirname, 'assets/planeLayout.png')
+    planeImage = QPixmap(path)
 
     if planeImage.isNull():
         print("Could not find plane layout image")
