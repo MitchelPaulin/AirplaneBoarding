@@ -4,13 +4,16 @@ from Seat import *
 
 class Plane:
 
+    """
+    A class to act as a wrapper around a matrix of seats 
+    """
+
     FIRST_SEAT_X = 755
     FIRST_SEAT_Y = 54
     SEAT_GAP_X = 3.6
     SEAT_GAP_Y = 2
     COLS = 24
     ROWS = 7
-    TOTAL_SEATS = COLS * ROWS
 
     # holds an array of seats that patrons can occupy
     cells = []
@@ -48,3 +51,11 @@ class Plane:
                 self.startSeat = self.cells[i][0] #first seat in isle is where everyone starts 
                 self.cells[i].append(Seat(x + Seat.SEAT_WIDTH, y, SeatRow.NoSeat))
                 self.cells[i].append(Seat(x + 2 * Seat.SEAT_WIDTH, y, SeatRow.NoSeat))
+    
+    def startSeatEmpty(self):
+        return self.startSeat.getPerson() is None 
+    
+    def addToStartSeat(self, person):
+        if self.startSeatEmpty():
+            self.startSeat.setPerson(person)
+

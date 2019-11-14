@@ -56,7 +56,7 @@ if __name__ == "__main__":
     #     for seat in row:
     #         if seat.seatType != SeatRow.NoSeat:
     #             p = Person(seat)
-    #             p.setPos(seat.x_pos, seat.y_pos)
+    #             p.setPos(seat.xPos, seat.yPos)
     #             newScene.addItem(p)
 
     sys.exit(app.exec_())

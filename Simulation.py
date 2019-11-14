@@ -4,9 +4,10 @@ import logging
 from enum import Enum
 import random
 from Seat import SeatRow
+from Plane import Plane 
+from Person import MoveType
 
 ShuffleType = Enum('ShuffleType', 'Random Steffen')
-
 
 class Simulation:
 
@@ -16,6 +17,7 @@ class Simulation:
     plane = None
     patrons = None
     scene = None
+    peopleInSim = None
 
     def __init__(self, plane, scene, shuffleType):
         self.plane = plane 
@@ -26,6 +28,8 @@ class Simulation:
 
         self.patrons = self.makePatrons()
         self.sufflePatrons(shuffleType)
+
+        self.peopleInSim = []
 
         self.timer.start()
     
@@ -55,6 +59,51 @@ class Simulation:
         """
         move to the next time step 
         """
-        top = self.patrons.pop()
-        top.setPos(top.getGoalSeat().x_pos, top.getGoalSeat().y_pos)
-        self.scene.addItem(top)
+
+        #allow all patrons to move again 
+        for person in self.peopleInSim:
+            person.setCanMove(True)
+
+        #ask the plane to try and move everyone twoards the goal seat 
+        self.movePatrons()
+
+        #try to see if we can get someone on the plane 
+        if self.plane.startSeatEmpty() and len(self.patrons) > 0:
+            nextPerson = self.patrons.pop()
+            self.plane.addToStartSeat(nextPerson)            
+            self.scene.addItem(nextPerson) 
+            self.peopleInSim.append(nextPerson)
+    
+    def movePatrons(self):
+        """
+        For every patron on the plane attemp to move them twoards the goal
+        """
+
+        state = self.plane.cells 
+
+        #propigate change from front to back 
+        for col in range(Plane.COLS -1, -1, -1):
+            for row in range(Plane.ROWS):
+                cell = state[row][col]
+                if cell.hasPerson():
+                    person = cell.getPerson()
+                    #if the person is not where they should be 
+                    if cell != person.getGoalSeat() and person.canMove():
+                        move = person.getNextMove(cell)
+                        newSeat = None 
+                        if move == MoveType.Right:
+                            newSeat = state[row][col + 1]
+                        elif move == MoveType.Left:
+                            newSeat = state[row][col - 1]
+                        elif move == MoveType.Up:
+                            newSeat = state[row - 1][col]
+                        elif move == MoveType.Down:
+                            newSeat = state[row + 1][col]
+                        else:
+                            continue
+                        #move person to new seat 
+                        if not newSeat.hasPerson() or True:
+                            person.setCanMove(False) #cant move twice in one sim loop
+                            newSeat.setPerson(person)
+                            cell.removePerson()
+
