@@ -110,6 +110,15 @@ class Simulation:
                             newSeat = state[row + 1][col]
                         else:
                             continue
+                        
+                        #they are now in the same column as their seat, stow bag 
+                        if move == MoveType.Up or move == MoveType.Down:
+                            if not person.hasStowedBag():
+                                person.addWaitTime(1)
+                                person.setHasStowed(True)
+                                person.changeIsStowingPixMap()
+                                continue
+
                         #move person to new seat 
                         if not newSeat.hasPerson():
                             person.setCanMove(False) #cant move twice in one sim loop

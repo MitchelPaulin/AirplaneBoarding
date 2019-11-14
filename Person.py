@@ -14,6 +14,7 @@ class Person(QGraphicsPixmapItem):
     moveable = None
     canBlock = None
     hasWaitedForPassengers = None
+    hasStowed = None
     waitTime = 0  # how many cycles this person will wait
     isDefault = None
 
@@ -28,6 +29,7 @@ class Person(QGraphicsPixmapItem):
         self.hasWaitedForPassengers = False
         self.waitTime = 0
         self.isDefault = True
+        self.hasStowed = False
 
         if goalSeat.seatType == SeatRow.Center:
             self.pixMap = QPixmap(os.path.join(dirname, 'assets/tealPerson.png'))
@@ -42,6 +44,12 @@ class Person(QGraphicsPixmapItem):
             self.waitigPixMap = QPixmap(os.path.join(dirname, 'assets/bluePersonWaiting.png'))
             self.stowingPixMap = QPixmap(os.path.join(dirname, 'assets/bluePersonStowing.png'))
         super().__init__(self.pixMap)
+    
+    def hasStowedBag(self):
+        return self.hasStowed
+    
+    def setHasStowed(self, state):
+        self.hasStowed = state
     
     def isDefaultPixMap(self):
         return self.isDefault 
