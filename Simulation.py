@@ -91,6 +91,10 @@ class Simulation:
                     if person.getWaitTime() > 0:
                         person.decWaitTime()
                         continue 
+                    
+                    #this person is not waiting, so set to default pixmap
+                    if not person.isDefaultPixMap():
+                        person.changeDefaultPixMap()
 
                     #if the person is not where they should be 
                     if cell != person.getGoalSeat() and person.canMove():
@@ -115,6 +119,7 @@ class Simulation:
                             #person needs to wait people number of cycles to enter seat 
                             if not person.getHasWaitedForPassengers():
                                 person.addWaitTime(2)
+                                person.changeIsWaitingPixMap()
                                 person.setHasWaitedWaitedForPassengers(True)
                             else:
                                 person.setCanMove(False) #cant move twice in one sim loop
