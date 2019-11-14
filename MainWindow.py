@@ -10,6 +10,8 @@ from PyQt5.QtCore import QFile, QSize
 from PyQt5.uic import loadUi
 from Plane import Plane 
 from Person import Person 
+from Seat import SeatRow
+from Simulation import Simulation, ShuffleType
 
 
 class MainWindow(QMainWindow):
@@ -45,12 +47,16 @@ if __name__ == "__main__":
     simWindow.setScene(newScene)
 
     plane = Plane()
+    simulation = Simulation(plane, newScene, ShuffleType.Random)
+
+    #handle UI stuff here 
 
     #test
-    for row in plane.positions:
-        for seat in row:
-            p = Person(seat)
-            p.setPos(seat.x_pos, seat.y_pos)
-            newScene.addItem(p)
+    # for row in plane.positions:
+    #     for seat in row:
+    #         if seat.seatType != SeatRow.NoSeat:
+    #             p = Person(seat)
+    #             p.setPos(seat.x_pos, seat.y_pos)
+    #             newScene.addItem(p)
 
     sys.exit(app.exec_())
