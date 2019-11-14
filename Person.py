@@ -8,18 +8,38 @@ MoveType = Enum('MoveType', 'Up Down Left Right NoMove')
 class Person(QGraphicsPixmapItem):
 
     goalSeat = None
-    moveable = True
+    moveable = None
+    canBlock = None
+    pixMap = None
+    hasWaitedForPassengers = None 
+    waitTime = 0 # how many cycles this person will wait 
 
     def __init__(self, goalSeat):
         self.goalSeat = [goalSeat]
+        self.moveable = False 
+        self.canBlock = True
+        self.hasWaitedForPassengers = False 
+        self.waitTime = 0
+
         if goalSeat.seatType == SeatRow.Center:
-            super().__init__(QPixmap('assets/tealPerson.png'))
+            self.pixMap = QPixmap('assets/tealPerson.png')
         elif goalSeat.seatType == SeatRow.Isle:
-            super().__init__(QPixmap('assets/violetPerson.png'))
+            self.pixMap = QPixmap('assets/violetPerson.png')
         elif goalSeat.seatType == SeatRow.Window:
-            super().__init__(QPixmap('assets/bluePerson.png'))
-        else:
-            super().__init__(QPixmap('assets/tealPerson.png'))
+            self.pixMap = QPixmap('assets/bluePerson.png')
+        super().__init__(self.pixMap)
+
+    def getHasWaitedForPassengers(self):
+        return self.hasWaitedForPassengers 
+    
+    def setHasWaitedWaitedForPassengers(self, state):
+        self.hasWaitedForPassengers = state 
+    
+    def setCanBlock(self, state):
+        self.canBlock = state 
+    
+    def isBlocking(self):
+        return self.canBlock
     
     def setPosition(self, cell):
         self.setPos(cell.xPos, cell.yPos)
@@ -39,6 +59,15 @@ class Person(QGraphicsPixmapItem):
         
     def addGoalSeat(self, seat):
         self.goalSeat.append(seat)
+    
+    def addWaitTime(self, time):
+        self.waitTime += time 
+    
+    def decWaitTime(self):
+        self.waitTime -= 1
+    
+    def getWaitTime(self):
+        return self.waitTime
     
     def getNextMove(self, curSeat):
         goal = self.getGoalSeat()

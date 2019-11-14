@@ -51,12 +51,4 @@ if __name__ == "__main__":
 
     #handle UI stuff here 
 
-    #test
-    # for row in plane.positions:
-    #     for seat in row:
-    #         if seat.seatType != SeatRow.NoSeat:
-    #             p = Person(seat)
-    #             p.setPos(seat.xPos, seat.yPos)
-    #             newScene.addItem(p)
-
     sys.exit(app.exec_())

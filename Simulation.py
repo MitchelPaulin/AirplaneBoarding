@@ -11,7 +11,7 @@ ShuffleType = Enum('ShuffleType', 'Random Steffen')
 
 class Simulation:
 
-    ACTIONS_PER_SECOND = 1
+    ACTIONS_PER_SECOND = 2
 
     timer = None 
     plane = None
@@ -87,6 +87,11 @@ class Simulation:
                 cell = state[row][col]
                 if cell.hasPerson():
                     person = cell.getPerson()
+
+                    if person.getWaitTime() > 0:
+                        person.decWaitTime()
+                        continue 
+
                     #if the person is not where they should be 
                     if cell != person.getGoalSeat() and person.canMove():
                         move = person.getNextMove(cell)
@@ -102,8 +107,19 @@ class Simulation:
                         else:
                             continue
                         #move person to new seat 
-                        if not newSeat.hasPerson() or True:
+                        if not newSeat.hasPerson():
                             person.setCanMove(False) #cant move twice in one sim loop
                             newSeat.setPerson(person)
                             cell.removePerson()
+                        elif not newSeat.getPerson().isBlocking():
+                            #person needs to wait people number of cycles to enter seat 
+                            if not person.getHasWaitedForPassengers():
+                                person.addWaitTime(2)
+                                person.setHasWaitedWaitedForPassengers(True)
+                            else:
+                                person.setCanMove(False) #cant move twice in one sim loop
+                                newSeat.setPerson(person)
+                                cell.removePerson()
 
+                    else:
+                        person.setCanBlock(False)
