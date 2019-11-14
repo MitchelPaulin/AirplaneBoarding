@@ -54,4 +54,6 @@ if __name__ == "__main__":
 
     #handle UI stuff here 
 
+    simulation.start()
+
     sys.exit(app.exec_())

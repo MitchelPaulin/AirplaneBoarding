@@ -30,9 +30,9 @@ class Simulation:
         self.sufflePatrons(shuffleType)
 
         self.peopleInSim = []
-
-        self.timer.start()
     
+    def start(self):
+        self.timer.start()
 
     def makePatrons(self):
         """
@@ -118,22 +118,37 @@ class Simulation:
                                 person.setHasStowed(True)
                                 person.changeIsStowingPixMap()
                                 continue
+                            elif not person.getHasWaitedForPassengers():
+                                #the amount of time this person waits is proportional to the people they need to get by
+
+
+                                #note refactor this into new function and fix it so people only count people as waiting they need to pass over
+                                peopleToWaitFor = 0
+                                if move == MoveType.Up:
+                                    for i in range(1,4):
+                                        if state[row - i][col].hasPerson():
+                                            peopleToWaitFor += 1
+                                        else:
+                                            break
+                                else:
+                                    for i in range(1,4):
+                                        if state[row + i][col].hasPerson():
+                                            peopleToWaitFor += 1
+                                        else:
+                                            break
+                                
+                                if peopleToWaitFor > 0:
+                                    person.addWaitTime(peopleToWaitFor)
+                                    person.changeIsWaitingPixMap()
+                                
+                                person.setHasWaitedWaitedForPassengers(True)
+                                continue 
 
                         #move person to new seat 
-                        if not newSeat.hasPerson():
+                        if not newSeat.hasPerson() or not newSeat.getPerson().isBlocking():
                             person.setCanMove(False) #cant move twice in one sim loop
                             newSeat.setPerson(person)
                             cell.removePerson()
-                        elif not newSeat.getPerson().isBlocking():
-                            #person needs to wait people number of cycles to enter seat 
-                            if not person.getHasWaitedForPassengers():
-                                person.addWaitTime(2)
-                                person.changeIsWaitingPixMap()
-                                person.setHasWaitedWaitedForPassengers(True)
-                            else:
-                                person.setCanMove(False) #cant move twice in one sim loop
-                                newSeat.setPerson(person)
-                                cell.removePerson()
 
                     else:
                         person.setCanBlock(False)
