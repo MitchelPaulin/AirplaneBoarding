@@ -125,17 +125,13 @@ class Simulation:
                                 #note refactor this into new function and fix it so people only count people as waiting they need to pass over
                                 peopleToWaitFor = 0
                                 if move == MoveType.Up:
-                                    for i in range(1,4):
-                                        if state[row - i][col].hasPerson():
+                                    for i in range(1, 3 - person.getGoalSeat().row):
+                                        if state[row - i][col].isGoal():
                                             peopleToWaitFor += 1
-                                        else:
-                                            break
                                 else:
-                                    for i in range(1,4):
-                                        if state[row + i][col].hasPerson():
+                                    for i in range(1, person.getGoalSeat().row - 3):
+                                        if state[row + i][col].isGoal():
                                             peopleToWaitFor += 1
-                                        else:
-                                            break
                                 
                                 if peopleToWaitFor > 0:
                                     person.addWaitTime(peopleToWaitFor)
@@ -148,6 +144,12 @@ class Simulation:
                         if not newSeat.hasPerson() or not newSeat.getPerson().isBlocking():
                             person.setCanMove(False) #cant move twice in one sim loop
                             newSeat.setPerson(person)
+
+                            #person made it 
+                            if newSeat == person.getGoalSeat():
+                                newSeat.goalIsReachd()
+                            
+                            #remove person from previous cell 
                             cell.removePerson()
 
                     else:

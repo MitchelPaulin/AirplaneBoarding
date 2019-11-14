@@ -43,14 +43,10 @@ class Plane:
                 if x >= 1:
                     x += self.SEAT_GAP_X * (j - 1)
 
-                newSeat = Seat(x, y, seatType)
+                newSeat = Seat(x, y, seatType, i, j)
                 self.cells[i].append(newSeat)
-            
-            #need two extra cells for center isle so patrons can let other patrons in 
-            if i == 3:
-                self.startSeat = self.cells[i][0] #first seat in isle is where everyone starts 
-                self.cells[i].append(Seat(x + Seat.SEAT_WIDTH, y, SeatRow.NoSeat))
-                self.cells[i].append(Seat(x + 2 * Seat.SEAT_WIDTH, y, SeatRow.NoSeat))
+        
+        self.startSeat = self.cells[3][0] #first seat in isle is where everyone starts 
     
     def startSeatEmpty(self):
         return self.startSeat.getPerson() is None 
