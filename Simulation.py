@@ -78,8 +78,6 @@ class Simulation:
             for i in range(len(self.patrons)):
                 steffen[STEFFEN_PERFECT_SEQUENCE[i] - 1] = self.patrons[i]
             
-            for x in steffen:
-                print(x.getGoalSeat().row, x.getGoalSeat().col)
             self.patrons = steffen
 
     def next(self):
