@@ -2,13 +2,17 @@ from PyQt5.QtWidgets import QGraphicsPixmapItem
 from PyQt5.QtGui import QPixmap
 from Seat import SeatRow
 from enum import Enum
-import os 
+import os
 
 MoveType = Enum('MoveType', 'Up Down Left Right NoMove')
 
 dirname = os.path.dirname(__file__)
 
+
 class Person(QGraphicsPixmapItem):
+
+    SWAP_TIME = 2
+    BAG_STOW_TIME = 1
 
     goalSeat = None
     moveable = None
@@ -19,7 +23,7 @@ class Person(QGraphicsPixmapItem):
     isDefault = None
 
     pixMap = None
-    waitigPixMap = None
+    waitingPixMap = None
     stowingPixMap = None
 
     def __init__(self, goalSeat):
@@ -32,36 +36,45 @@ class Person(QGraphicsPixmapItem):
         self.hasStowed = False
 
         if goalSeat.seatType == SeatRow.Center:
-            self.pixMap = QPixmap(os.path.join(dirname, 'assets/tealPerson.png'))
-            self.waitigPixMap = QPixmap(os.path.join(dirname, 'assets/tealPersonWaiting.png'))
-            self.stowingPixMap = QPixmap(os.path.join(dirname, 'assets/tealPersonStowing.png'))
+            self.pixMap = QPixmap(os.path.join(
+                dirname, 'assets/tealPerson.png'))
+            self.waitingPixMap = QPixmap(os.path.join(
+                dirname, 'assets/tealPersonWaiting.png'))
+            self.stowingPixMap = QPixmap(os.path.join(
+                dirname, 'assets/tealPersonStowing.png'))
         elif goalSeat.seatType == SeatRow.Isle:
-            self.pixMap = QPixmap(os.path.join(dirname, 'assets/violetPerson.png'))
-            self.waitigPixMap = QPixmap(os.path.join(dirname, 'assets/violetPersonWaiting.png'))
-            self.stowingPixMap = QPixmap(os.path.join(dirname, 'assets/violetPersonStowing.png'))
+            self.pixMap = QPixmap(os.path.join(
+                dirname, 'assets/violetPerson.png'))
+            self.waitingPixMap = QPixmap(os.path.join(
+                dirname, 'assets/violetPersonWaiting.png'))
+            self.stowingPixMap = QPixmap(os.path.join(
+                dirname, 'assets/violetPersonStowing.png'))
         elif goalSeat.seatType == SeatRow.Window:
-            self.pixMap = QPixmap(os.path.join(dirname, 'assets/bluePerson.png'))
-            self.waitigPixMap = QPixmap(os.path.join(dirname, 'assets/bluePersonWaiting.png'))
-            self.stowingPixMap = QPixmap(os.path.join(dirname, 'assets/bluePersonStowing.png'))
+            self.pixMap = QPixmap(os.path.join(
+                dirname, 'assets/bluePerson.png'))
+            self.waitingPixMap = QPixmap(os.path.join(
+                dirname, 'assets/bluePersonWaiting.png'))
+            self.stowingPixMap = QPixmap(os.path.join(
+                dirname, 'assets/bluePersonStowing.png'))
         super().__init__(self.pixMap)
-    
+
     def hasStowedBag(self):
         return self.hasStowed
-    
+
     def setHasStowed(self, state):
         self.hasStowed = state
-    
+
     def isDefaultPixMap(self):
-        return self.isDefault 
-    
+        return self.isDefault
+
     def changeIsWaitingPixMap(self):
-        self.setPixmap(self.waitigPixMap)
-        self.isDefault = False 
-    
+        self.setPixmap(self.waitingPixMap)
+        self.isDefault = False
+
     def changeIsStowingPixMap(self):
         self.setPixmap(self.stowingPixMap)
-        self.isDefault = False 
-    
+        self.isDefault = False
+
     def changeDefaultPixMap(self):
         self.setPixmap(self.pixMap)
         self.isDefault = True

@@ -4,17 +4,19 @@
 import sys
 import logging
 import qdarkstyle
-import os 
+import os
 from PyQt5.QtGui import QBrush, QPixmap, QImage
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsScene
 from PyQt5.QtCore import QFile, QSize
 from PyQt5.uic import loadUi
-from Plane import Plane 
-from Person import Person 
+from Plane import Plane
+from Person import Person
 from Seat import SeatRow
 from Simulation import Simulation, ShuffleType
 
 dirname = os.path.dirname(__file__)
+
+
 class MainWindow(QMainWindow):
     """
     The Main panel of the application 
@@ -50,9 +52,9 @@ if __name__ == "__main__":
     simWindow.setScene(newScene)
 
     plane = Plane()
-    simulation = Simulation(plane, newScene, ShuffleType.Random)
+    simulation = Simulation(plane, newScene, ShuffleType.Steffen)
 
-    #handle UI stuff here 
+    # handle UI stuff here
 
     simulation.start()
 

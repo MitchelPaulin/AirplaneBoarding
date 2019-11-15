@@ -12,9 +12,9 @@ class Seat:
     yPos = None
     seatType = None
     person = None
-    row = None 
-    col = None 
-    goalReached = None 
+    row = None
+    col = None
+    goalReached = None
 
     def setPerson(self, person):
         """
@@ -22,36 +22,36 @@ class Seat:
         """
         self.person = person
         person.setPosition(self)
-    
+
     def hasPerson(self):
-        return self.person != None 
+        return self.person != None
 
     def getPerson(self):
         return self.person
-    
+
     def removePerson(self):
         temp = self.person
         self.person = None
-        return temp 
+        return temp
 
     def __init__(self, xPos, yPos, seatType, row, col):
         self.xPos = xPos
         self.yPos = yPos
         self.seatType = seatType
-        self.row = row 
+        self.row = row
         self.col = col
-        self.goalReached = False 
-    
-    def goalIsReachd(self):
-        self.goalReached = True 
-    
-    #required since we need to keep track of if this seat is someones goal whether that person is blocking or not 
+        self.goalReached = False
+
+    def goalIsReached(self):
+        self.goalReached = True
+
+    # required since we need to keep track of if this seat is someones goal whether that person is blocking or not
     def isGoal(self):
         return self.goalReached
 
     def getRow(self):
-        return self.row 
-    
+        return self.row
+
     def getCol(self):
         return self.col
 

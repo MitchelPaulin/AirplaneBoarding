@@ -26,13 +26,13 @@ class Plane:
             y = self.FIRST_SEAT_Y + Seat.SEAT_HEIGHT * i
             y += self.SEAT_GAP_Y * (i - 1)
 
-            #determine seat type based on row
+            # determine seat type based on row
             seatType = SeatRow.NoSeat
-            if i == 1 or i == 5: #Center row index
-                seatType = SeatRow.Center 
-            elif i == 2 or i == 4: # Isle row index
+            if i == 1 or i == 5:  # Center row index
+                seatType = SeatRow.Center
+            elif i == 2 or i == 4:  # Isle row index
                 seatType = SeatRow.Isle
-            elif i == 0 or i == 6: # Window row index
+            elif i == 0 or i == 6:  # Window row index
                 seatType = SeatRow.Window
 
             x = None
@@ -45,13 +45,13 @@ class Plane:
 
                 newSeat = Seat(x, y, seatType, i, j)
                 self.cells[i].append(newSeat)
-        
-        self.startSeat = self.cells[3][0] #first seat in isle is where everyone starts 
-    
+
+        # first seat in isle is where everyone starts
+        self.startSeat = self.cells[3][0]
+
     def startSeatEmpty(self):
-        return self.startSeat.getPerson() is None 
-    
+        return self.startSeat.getPerson() is None
+
     def addToStartSeat(self, person):
         if self.startSeatEmpty():
             self.startSeat.setPerson(person)
-
