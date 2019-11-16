@@ -11,9 +11,6 @@ dirname = os.path.dirname(__file__)
 
 class Person(QGraphicsPixmapItem):
 
-    SWAP_TIME = 2
-    BAG_STOW_TIME = 1
-
     goalSeat = None
     moveable = None
     canBlock = None

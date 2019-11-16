@@ -46,7 +46,7 @@
      <string>Begin Simulation</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="toggle_simulation_button">
+   <widget class="QPushButton" name="pause_simulation_button">
     <property name="geometry">
      <rect>
       <x>330</x>
@@ -133,19 +133,19 @@
     </property>
     <layout class="QFormLayout" name="formLayout">
      <item row="0" column="1">
-      <widget class="QRadioButton" name="radioButton">
+      <widget class="QRadioButton" name="back_to_front_radio">
        <property name="font">
         <font>
          <pointsize>11</pointsize>
         </font>
        </property>
        <property name="text">
-        <string>Front To Back</string>
+        <string>Back To Front</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QRadioButton" name="radioButton_2">
+      <widget class="QRadioButton" name="random_radio">
        <property name="font">
         <font>
          <pointsize>11</pointsize>
@@ -157,7 +157,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QRadioButton" name="radioButton_3">
+      <widget class="QRadioButton" name="steffen_perfect_radio">
        <property name="font">
         <font>
          <pointsize>11</pointsize>
@@ -169,7 +169,7 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QRadioButton" name="radioButton_4">
+      <widget class="QRadioButton" name="boarding_groups_radio">
        <property name="font">
         <font>
          <pointsize>11</pointsize>
@@ -182,7 +182,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QSlider" name="ActionsPerSecondSlider">
+   <widget class="QSlider" name="actions_per_second_slider">
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -204,7 +204,7 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QSlider" name="StowTimeSlider">
+   <widget class="QSlider" name="stow_time_slider">
     <property name="geometry">
      <rect>
       <x>230</x>
@@ -223,7 +223,7 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QSlider" name="PassengerShuffleTimeSlider">
+   <widget class="QSlider" name="passenger_shuffle_time_slider">
     <property name="geometry">
      <rect>
       <x>380</x>

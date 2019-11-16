@@ -13,20 +13,24 @@ ShuffleType = Enum('ShuffleType', 'Random Steffen BackToFront BoardingGroups')
 
 class Simulation:
 
-    ACTIONS_PER_SECOND = 10
-
+    actionsPerSecond = None
+    stowTime = None 
+    shuffleTime = None
     timer = None
     plane = None
     patrons = None
     scene = None
     peopleInSim = None
 
-    def __init__(self, plane, scene, shuffleType):
+    def __init__(self, plane, scene, shuffleType, actions=10, stowTime=1, shuffleTime=2):
         self.plane = plane
         self.scene = scene
         self.timer = QTimer()
         self.timer.timeout.connect(self.next)
-        self.timer.setInterval(1000 / self.ACTIONS_PER_SECOND)
+        self.actionsPerSecond = actions
+        self.stowTime = stowTime
+        self.shuffleTime = shuffleTime
+        self.timer.setInterval(1000 / self.actionsPerSecond)
 
         self.patrons = self.makePatrons()
         self.shufflePatrons(shuffleType)
@@ -35,6 +39,9 @@ class Simulation:
 
     def start(self):
         self.timer.start()
+    
+    def pause(self):
+        self.timer.stop()
 
     def makePatrons(self):
         """
@@ -139,7 +146,7 @@ class Simulation:
                         # they are now in the same column as their seat, stow bag
                         if move == MoveType.Up or move == MoveType.Down:
                             if not person.hasStowedBag():
-                                person.addWaitTime(Person.BAG_STOW_TIME)
+                                person.addWaitTime(self.stowTime)
                                 person.setHasStowed(True)
                                 person.changeIsStowingPixMap()
                                 continue
@@ -158,8 +165,7 @@ class Simulation:
                                             peopleToWaitFor += 1
 
                                 if peopleToWaitFor > 0:
-                                    person.addWaitTime(
-                                        peopleToWaitFor * Person.SWAP_TIME)
+                                    person.addWaitTime(peopleToWaitFor * self.shuffleTime)
                                     person.changeIsWaitingPixMap()
 
                                 person.setHasWaitedWaitedForPassengers(True)
@@ -180,3 +186,7 @@ class Simulation:
 
                     else:
                         person.setCanBlock(False)
+    
+    def clearPatrons(self):
+        for person in self.peopleInSim:
+            self.scene.removeItem(person)

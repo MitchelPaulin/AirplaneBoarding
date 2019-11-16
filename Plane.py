@@ -16,10 +16,11 @@ class Plane:
     ROWS = 7
 
     # holds an array of seats that patrons can occupy
-    cells = []
+    cells = None
     startSeat = None
 
     def __init__(self):
+        self.cells = []
         for i in range(self.ROWS):
             self.cells.append([])
 
