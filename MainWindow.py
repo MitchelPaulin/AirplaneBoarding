@@ -52,10 +52,13 @@ if __name__ == "__main__":
     simWindow.setScene(newScene)
 
     plane = Plane()
-    simulation = Simulation(plane, newScene, ShuffleType.Steffen)
+    simulation = Simulation(plane, newScene, ShuffleType.BoardingGroups)
 
     # handle UI stuff here
 
-    simulation.start()
+    def startSim():
+        simulation.start()
+
+    window.begin_simulation_button.clicked.connect(startSim)
 
     sys.exit(app.exec_())
