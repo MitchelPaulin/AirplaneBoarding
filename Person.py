@@ -100,10 +100,6 @@ class Person(QGraphicsPixmapItem):
     def getGoalSeat(self):
         return self.goalSeat[-1]
 
-    def popGoalSeat(self):
-        if len(self.goalSeat):
-            self.goalSeat.pop()
-
     def addGoalSeat(self, seat):
         self.goalSeat.append(seat)
 

@@ -31,9 +31,9 @@
    <widget class="QPushButton" name="begin_simulation_button">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>140</x>
       <y>950</y>
-      <width>131</width>
+      <width>211</width>
       <height>51</height>
      </rect>
     </property>
@@ -44,24 +44,6 @@
     </property>
     <property name="text">
      <string>Begin Simulation</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pause_simulation_button">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>950</y>
-      <width>131</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Pause Simluation</string>
     </property>
    </widget>
    <widget class="QGraphicsView" name="simulation_window">
@@ -80,24 +62,6 @@
      <enum>Qt::ScrollBarAlwaysOff</enum>
     </property>
    </widget>
-   <widget class="QPushButton" name="cancel_simulation_button">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>950</y>
-      <width>131</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Cancel Simulation</string>
-    </property>
-   </widget>
    <widget class="QSlider" name="actions_per_second_slider">
     <property name="geometry">
      <rect>
@@ -106,6 +70,11 @@
       <width>22</width>
       <height>160</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="minimum">
      <number>1</number>
@@ -129,6 +98,11 @@
       <height>160</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
     <property name="minimum">
      <number>1</number>
     </property>
@@ -148,6 +122,11 @@
       <height>160</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
     <property name="minimum">
      <number>1</number>
     </property>
@@ -164,11 +143,16 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>30</x>
       <y>890</y>
-      <width>111</width>
+      <width>141</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Actions Per Second</string>
@@ -177,11 +161,16 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>190</x>
       <y>890</y>
-      <width>91</width>
+      <width>111</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Bag Stow Time</string>
@@ -190,11 +179,16 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>320</x>
+      <x>310</x>
       <y>890</y>
-      <width>141</width>
+      <width>171</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Passenger Shuffle Time</string>
@@ -208,6 +202,11 @@
       <width>51</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>50</string>
@@ -225,6 +224,11 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
     <property name="text">
      <string>10</string>
     </property>
@@ -240,6 +244,11 @@
       <width>61</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>10</string>
@@ -257,12 +266,28 @@
       <height>131</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
     <layout class="QGridLayout" name="gridLayout">
      <item row="1" column="1">
-      <widget class="QLCDNumber" name="iteration_lcd"/>
+      <widget class="QLCDNumber" name="iteration_lcd">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+      </widget>
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Generation</string>
        </property>
@@ -272,13 +297,30 @@
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QLCDNumber" name="generation_lcd"/>
+      <widget class="QLCDNumber" name="generation_lcd">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+      </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QLCDNumber" name="time_lcd"/>
+      <widget class="QLCDNumber" name="time_lcd">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+      </widget>
      </item>
      <item row="0" column="1">
       <widget class="QLabel" name="label_8">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Current Iteration</string>
        </property>
@@ -289,6 +331,11 @@
      </item>
      <item row="0" column="2">
       <widget class="QLabel" name="label_9">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Time (Seconds)</string>
        </property>
@@ -298,6 +345,66 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QLCDNumber" name="best_time_lcd">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>500</y>
+      <width>111</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>470</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Best Time</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="best_sequence_label">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>570</y>
+      <width>1151</width>
+      <height>411</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
