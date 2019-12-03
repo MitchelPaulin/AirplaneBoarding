@@ -94,6 +94,9 @@ class Simulation:
         Move to the next time step 
         """
 
+        if self.curGeneration >= self.generations:
+            self.timer.stop()
+
         self.window.time_lcd.display(self.elapsedTime.elapsed() / 1000)
 
         # allow all patrons to move again
