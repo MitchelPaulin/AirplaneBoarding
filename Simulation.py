@@ -8,6 +8,7 @@ from Plane import Plane
 from Person import MoveType
 import heapq 
 import sys
+import pandas as pd
 
 ShuffleType = Enum('ShuffleType', 'Random Steffen BackToFront BoardingGroups')
 
@@ -68,7 +69,9 @@ class Simulation:
 
         self.timeHeap = [(100, patrons[:]), (100, patrons[:])]
         heapq.heapify(self.timeHeap)
-
+        # Create DataFrame
+        self.df = pd.DataFrame(columns=['Generation','Iteration','Time','Seed'])
+        self.gen_df = pd.DataFrame(columns=['Generation','FBest', 'SBest'])
 
     def start(self):
         self.patrons = self.simulationQueues.pop()
@@ -115,6 +118,11 @@ class Simulation:
             if len(self.simulationQueues) > 0:
                 time = self.elapsedTime.restart() / 1000
                 print(time)
+                self.df = self.df.append({
+                    'Generation': self.curGeneration,
+                    'Iteration': self.iteration,
+                    'Time': time,
+                }, ignore_index=True) 
                 if time < self.bestTime:
                     self.bestTime = time
                     self.window.best_time_lcd.display(time)
@@ -123,16 +131,19 @@ class Simulation:
                         text += str(person.getGoalSeat().row * Plane.COLS + person.getGoalSeat().col) + " "
                     self.window.best_sequence_label.setText(text)
                 self.iteration += 1
+                self.update_graph()
                 self.window.iteration_lcd.display(self.iteration % self.popSize)
                 heapq.heappush(self.timeHeap, (time, self.curSimList[:]))
                 self.clearPatrons()
                 self.patrons = self.simulationQueues.pop()
                 self.peopleInSim = []
             else:
-                self.curGeneration += 1
+                self.df = self.df[0:0]
+                self.update_gen_graph()
                 self.window.generation_lcd.display(self.curGeneration)
 
                 if self.curGeneration > self.generations:
+                    self.df.to_csv(str(self.curGeneration)+'_output.csv')
                     self.timer.stop()
                     return 
 
@@ -140,6 +151,13 @@ class Simulation:
                 firstBest = heapq.heappop(self.timeHeap)
                 sndBest = heapq.heappop(self.timeHeap)
                 print(firstBest[0], sndBest[0])
+                if self.curGeneration != 0:
+                    self.gen_df = self.gen_df.append({
+                        'Generation': self.curGeneration,
+                        'FBest': firstBest[0],
+                        'SBest': sndBest[0],
+                    }, ignore_index=True) 
+                self.gen_df.to_csv('output.csv')
                 firstBest = [Person(p.getGoalSeat()) for p in firstBest[1]]
                 sndBest = [Person(p.getGoalSeat()) for p in sndBest[1]]
                 self.simulationQueues = [firstBest[:], sndBest[:]]
@@ -151,6 +169,7 @@ class Simulation:
                     self.simulationQueues.append(cp1)
                     self.simulationQueues.append(cp2)
                 self.variance -= 3
+                self.curGeneration += 1
                 self.resetSim()
 
     
@@ -260,3 +279,23 @@ class Simulation:
         self.peopleInSim = []
         self.times = []
         self.start()
+
+    def update_graph(self):
+
+        self.window.MplWidget.canvas.axes.clear()
+        self.window.MplWidget.canvas.axes.plot(self.df["Iteration"].values, self.df["Time"].values)
+        self.window.MplWidget.canvas.axes.legend(('time'),loc='upper right')
+        self.window.MplWidget.canvas.axes.set_xlabel('iteration')
+        self.window.MplWidget.canvas.axes.set_ylabel('time')
+        self.window.MplWidget.canvas.axes.set_title('Current Gen Iterations ')
+        self.window.MplWidget.canvas.draw()
+    
+    def update_gen_graph(self):
+        self.window.GenGraph.canvas.axes.clear()
+        self.window.GenGraph.canvas.axes.plot(self.gen_df["Generation"].values, self.gen_df["FBest"].values)
+        self.window.GenGraph.canvas.axes.plot(self.gen_df["Generation"].values, self.gen_df["SBest"].values)
+        self.window.GenGraph.canvas.axes.legend(('t1', 't2'), loc='upper right')
+        self.window.GenGraph.canvas.axes.set_xlabel('generation')
+        self.window.GenGraph.canvas.axes.set_ylabel('time')
+        self.window.GenGraph.canvas.axes.set_title('Generation Best Times')
+        self.window.GenGraph.canvas.draw()

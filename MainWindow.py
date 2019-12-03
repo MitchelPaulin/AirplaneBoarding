@@ -5,7 +5,7 @@ import sys
 import logging
 import qdarkstyle
 import os
-from PyQt5.QtGui import QBrush, QPixmap, QImage
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsScene
 from PyQt5.QtCore import QFile, QSize
 from PyQt5.uic import loadUi
