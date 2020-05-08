@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, QElapsedTimer
 from Person import Person
 import logging
 from enum import Enum
@@ -6,7 +6,8 @@ import random
 from Seat import SeatRow
 from Plane import Plane
 from Person import MoveType
-from Steffen import STEFFEN_PERFECT_SEQUENCE
+import heapq 
+import sys
 
 ShuffleType = Enum('ShuffleType', 'Random Steffen BackToFront BoardingGroups')
 
@@ -15,33 +16,65 @@ class Simulation:
 
     actionsPerSecond = None
     stowTime = None 
-    shuffleTime = None
     timer = None
     plane = None
     patrons = None
     scene = None
     peopleInSim = None
+    generations = None 
+    popSize = None 
+    elapsedTime = None 
+    simulationQueues = []
+    times = []
+    window = None 
+    curGeneration = 0
+    curSimList = None 
+    timeHeap = []
+    iteration = None 
+    variance = 0
+    bestTime = None 
 
-    def __init__(self, plane, scene, shuffleType, actions=10, stowTime=1, shuffleTime=2):
+    def __init__(self, plane, scene, window, actions=10, stowTime=1, shuffleTime=2, generations=10, popSize=10):
         self.plane = plane
         self.scene = scene
         self.timer = QTimer()
         self.timer.timeout.connect(self.next)
         self.actionsPerSecond = actions
         self.stowTime = stowTime
+        self.generations = generations
+        self.popSize = popSize
         self.shuffleTime = shuffleTime
         self.timer.setInterval(1000 / self.actionsPerSecond)
-
-        self.patrons = self.makePatrons()
-        self.shufflePatrons(shuffleType)
-
         self.peopleInSim = []
+        self.elapsedTime = QElapsedTimer()
+        self.window = window
+        self.window.time_lcd.setDigitCount(3)
+        self.iteration = 0
+        self.variance = 30
+        self.bestTime = sys.maxsize
+
+        #create an initial population 
+        patrons = self.makePatrons()
+        patrons = sorted(patrons, key=lambda patron: patron.getGoalSeat().xPos, reverse=True)
+        # now we will shuffle groups of 36 (6 * 6) to simulate a boarding party
+        i = 0
+        BOARDING_GROUP_SIZE = 36
+        while i < len(patrons):
+            group = patrons[i:i+BOARDING_GROUP_SIZE]
+            random.shuffle(group)
+            patrons[i:i+BOARDING_GROUP_SIZE] = group
+            i += BOARDING_GROUP_SIZE
+        self.simulationQueues.append(patrons)
+
+        self.timeHeap = [(100, patrons[:]), (100, patrons[:])]
+        heapq.heapify(self.timeHeap)
+
 
     def start(self):
+        self.patrons = self.simulationQueues.pop()
+        self.curSimList = self.patrons[:]
         self.timer.start()
-    
-    def pause(self):
-        self.timer.stop()
+        self.elapsedTime.start()
 
     def makePatrons(self):
         """
@@ -56,48 +89,22 @@ class Simulation:
 
         return patrons
 
-    def shufflePatrons(self, shuffleType):
-        """
-        Shuffle the patrons based on what boarding technique we want
-        """
-        if shuffleType == ShuffleType.Random:
-            random.shuffle(self.patrons)
-        elif shuffleType == ShuffleType.BackToFront:
-            self.patrons = sorted(
-                self.patrons, key=lambda patron: patron.getGoalSeat().xPos, reverse=True)
-        elif shuffleType == ShuffleType.BoardingGroups:
-            self.patrons = sorted(
-                self.patrons, key=lambda patron: patron.getGoalSeat().xPos, reverse=True)
-            # now we will shuffle groups of 36 (6 * 6) to simulate a boarding party
-            i = 0
-            BOARDING_GROUP_SIZE = 36
-            while i < len(self.patrons):
-                group = self.patrons[i:i+BOARDING_GROUP_SIZE]
-                random.shuffle(group)
-                self.patrons[i:i+BOARDING_GROUP_SIZE] = group
-                i += BOARDING_GROUP_SIZE
-        elif shuffleType == ShuffleType.Steffen:
-            # window to isle
-            self.patrons = sorted(
-                self.patrons, key=lambda patron: (patron.getGoalSeat().yPos, patron.getGoalSeat().xPos * -1), reverse=True)
-            steffen = [None for _ in range(len(self.patrons))]
-            #now assign everyone to where they should be in the list 
-            for i in range(len(self.patrons)):
-                steffen[STEFFEN_PERFECT_SEQUENCE[i] - 1] = self.patrons[i]
-            
-            self.patrons = steffen
-
     def next(self):
         """
         Move to the next time step 
         """
+
+        if self.curGeneration >= self.generations:
+            self.timer.stop()
+
+        self.window.time_lcd.display(self.elapsedTime.elapsed() / 1000)
 
         # allow all patrons to move again
         for person in self.peopleInSim:
             person.setCanMove(True)
 
         # ask the plane to try and move everyone twoards the goal seat
-        self.movePatrons()
+        finished = self.movePatrons()
 
         # try to see if we can get someone on the plane
         if self.plane.startSeatEmpty() and len(self.patrons) > 0:
@@ -105,6 +112,57 @@ class Simulation:
             self.plane.addToStartSeat(nextPerson)
             self.scene.addItem(nextPerson)
             self.peopleInSim.append(nextPerson)
+            finished = False 
+        
+        if finished:
+            if len(self.simulationQueues) > 0:
+                time = self.elapsedTime.restart() / 1000
+                print(time)
+                if time < self.bestTime:
+                    self.bestTime = time
+                    self.window.best_time_lcd.display(time)
+                    text = ""
+                    for person in self.curSimList:
+                        text += str(person.getGoalSeat().row * Plane.COLS + person.getGoalSeat().col) + " "
+                    self.window.best_sequence_label.setText(text)
+                self.iteration += 1
+                self.window.iteration_lcd.display(self.iteration % self.popSize)
+                heapq.heappush(self.timeHeap, (time, self.curSimList[:]))
+                self.clearPatrons()
+                self.patrons = self.simulationQueues.pop()
+                self.peopleInSim = []
+            else:
+                self.curGeneration += 1
+                self.window.generation_lcd.display(self.curGeneration)
+
+                if self.curGeneration > self.generations:
+                    self.timer.stop()
+                    return 
+
+                #take the best two lists and mutate them 
+                firstBest = heapq.heappop(self.timeHeap)
+                sndBest = heapq.heappop(self.timeHeap)
+                print(firstBest[0], sndBest[0])
+                firstBest = [Person(p.getGoalSeat()) for p in firstBest[1]]
+                sndBest = [Person(p.getGoalSeat()) for p in sndBest[1]]
+                self.simulationQueues = [firstBest[:], sndBest[:]]
+                for _ in range(self.popSize // 2 - 1):
+                    cp1 = [Person(p.getGoalSeat()) for p in firstBest]
+                    cp2 = [Person(p.getGoalSeat()) for p in sndBest]
+                    self.mutate(cp1, self.variance)
+                    self.mutate(cp2, self.variance)
+                    self.simulationQueues.append(cp1)
+                    self.simulationQueues.append(cp2)
+                self.variance -= 3
+                self.resetSim()
+
+    
+    def mutate(self, patronList, variance):
+        for _ in range(variance):
+            idx = range(len(patronList))
+            i1, i2 = random.sample(idx, 2)
+            patronList[i1], patronList[i2] = patronList[i2], patronList[i1]
+                
 
     def movePatrons(self):
         """
@@ -112,6 +170,7 @@ class Simulation:
         """
 
         state = self.plane.cells
+        simFinished = True 
 
         # propigate change from front to back
         for col in range(Plane.COLS - 1, -1, -1):
@@ -122,14 +181,18 @@ class Simulation:
 
                     if person.getWaitTime() > 0:
                         person.decWaitTime()
+                        simFinished = False
                         continue
 
                     # this person is not waiting, so set to default pixmap
                     if not person.isDefaultPixMap():
                         person.changeDefaultPixMap()
+                    
+                    if cell != person.getGoalSeat():
+                        simFinished = False
 
                     # if the person is not where they should be
-                    if cell != person.getGoalSeat() and person.canMove():
+                    if cell != person.getGoalSeat() and person.canMove(): 
                         move = person.getNextMove(cell)
                         newSeat = None
                         if move == MoveType.Right:
@@ -186,7 +249,17 @@ class Simulation:
 
                     else:
                         person.setCanBlock(False)
+        
+        return simFinished
     
     def clearPatrons(self):
         for person in self.peopleInSim:
             self.scene.removeItem(person)
+    
+    def resetSim(self):
+        self.timer.stop()
+        self.timeHeap = []
+        self.clearPatrons()
+        self.peopleInSim = []
+        self.times = []
+        self.start()

@@ -33,38 +33,11 @@ class MainWindow(QMainWindow):
         if self.simulation:
             self.simulation.clearPatrons()
 
-        simType = None
-
-        if self.back_to_front_radio.isChecked():
-            simType = ShuffleType.BackToFront
-        elif self.random_radio.isChecked():
-            simType = ShuffleType.Random
-        elif self.steffen_perfect_radio.isChecked():
-            simType = ShuffleType.Steffen
-        elif self.boarding_groups_radio.isChecked():
-            simType = ShuffleType.BoardingGroups
-        else:
-            return
-
         self.isPaused = False
         self.plane = Plane()
-        self.simulation = Simulation(self.plane, self.scene, simType, self.actions_per_second_slider.value(),
+        self.simulation = Simulation(self.plane, self.scene, self, self.actions_per_second_slider.value(),
                                      self.stow_time_slider.value(), self.passenger_shuffle_time_slider.value())
         self.simulation.start()
-
-    def pauseSim(self):
-        if self.isPaused:
-            self.simulation.start()
-            self.isPaused = False
-        elif self.simulation:
-            self.simulation.pause()
-            self.isPaused = True
-
-    def cancelSim(self):
-        if self.simulation:
-            self.simulation.clearPatrons()
-            self.simulation.pause()
-            self.simulation = None
 
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -82,8 +55,6 @@ class MainWindow(QMainWindow):
         self.scene.addPixmap(planeImage)
         simWindow.setScene(self.scene)
         self.begin_simulation_button.clicked.connect(self.startSim)
-        self.pause_simulation_button.clicked.connect(self.pauseSim)
-        self.cancel_simulation_button.clicked.connect(self.cancelSim)
         self.show()
 
 
